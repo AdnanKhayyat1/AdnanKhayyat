@@ -1,9 +1,9 @@
 import { Center, Scroll, ScrollControls, useGLTF, useScroll } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef } from "react";
-import ASCIIText from "./ASCIIText";
+import { useRef, useEffect } from "react";
 import carUrl from "./assets/free_1975_porsche_911_930_turbo.glb?url"; // Vite resolves to a real URL
 import './index.css';
+import * as THREE from "three";
 
 /**
  * Minimal 3D scroll-"slides" portfolio using React Three Fiber.
@@ -43,14 +43,6 @@ const VIEWS = [
   { p: [5, 2.5, 6], l: [-5, -1, -6], label: "Dynamic Motion", description: "Always moving forward" },
 ];
 
-function RetroCar() {
-  const { scene } = useGLTF(carUrl);
-  
-  // No material modifications - use default materials
-  return <Center>
-    <primitive object={scene} scale={1.2} position={[0, -1, 0]} />
-  </Center>;
-}
 function CameraRig() {
   const { camera } = useThree();
   const scroll = useScroll();
@@ -91,36 +83,69 @@ function CameraRig() {
 
 
 
+function RetroCar() {
+  const { scene } = useGLTF(carUrl);
+  const gl = useThree((state) => state.gl);
+  
+  // Load the scene's environment map and apply it to car materials
+  useEffect(() => {
+    // Create a white environment for reflections
+    const pmremGenerator = new THREE.PMREMGenerator(gl);
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xffffff);
+    const renderTarget = pmremGenerator.fromScene(scene);
+    
+    scene.traverse((child) => {
+      if ('isMesh' in child && child.isMesh) {
+        const mesh = child as THREE.Mesh;
+        if (mesh.material) {
+          const material = mesh.material as THREE.MeshStandardMaterial;
+          material.envMap = renderTarget.texture;
+          material.envMapIntensity = 1.5;
+          material.needsUpdate = true;
+        }
+      }
+    });
+    
+    return () => {
+      pmremGenerator.dispose();
+      renderTarget.dispose();
+    };
+  }, [scene, gl]);
+  
+  return <Center>
+    <primitive object={scene} scale={1.2} position={[0, -1, 0]} />
+  </Center>;
+}
+
 function Scene() {
   return (
     <>
-      {/* Ambient light for base visibility */}
-      {Array.from({ length: 12 }).map((_, index) => {
-        const angle = (index / 12) * Math.PI * 2; // Divide circle into 12 lights
-        const radius = 8; // Distance from car center
-        const x = Math.cos(angle) * radius;
-        const z = Math.sin(angle) * radius;
-        const hue = (index / 12) * 360; // Rainbow effect
-        
-        return (
-          <pointLight 
-            key={index} 
-            position={[x, 2, z]} 
-            intensity={50} 
-            color={`hsl(${hue}, 100%, 50%)`}
-          />
-        );
-      })}
+      {/* Bright white studio lighting - Infinite white world effect */}
+      <ambientLight intensity={2.0} color="#ffffff" />
       
-
+      {/* Soft directional lights from all angles for even illumination */}
+      <directionalLight position={[10, 10, 10]} intensity={1.2} color="#ffffff" />
+      <directionalLight position={[-10, 10, 10]} intensity={1.2} color="#ffffff" />
+      <directionalLight position={[10, 10, -10]} intensity={1.2} color="#ffffff" />
+      <directionalLight position={[-10, 10, -10]} intensity={1.2} color="#ffffff" />
+      <directionalLight position={[0, 15, 0]} intensity={1.5} color="#ffffff" />
       
+      {/* Additional fill lights for brightness */}
+      <pointLight position={[20, 10, 20]} intensity={2.0} color="#ffffff" />
+      <pointLight position={[-20, 10, 20]} intensity={2.0} color="#ffffff" />
+      <pointLight position={[20, 10, -20]} intensity={2.0} color="#ffffff" />
+      <pointLight position={[-20, 10, -20]} intensity={2.0} color="#ffffff" />
       
-      
-      
-      {/* Simple floor without reflectors */}
+      {/* Seamless infinite white floor - extends far beyond view */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.2, 0]} receiveShadow>
-        <planeGeometry args={[200, 200]} />
-        <meshStandardMaterial color="#202020" />
+        <planeGeometry args={[500, 500]} />
+        <meshStandardMaterial 
+          color="#ffffff" 
+          roughness={0.05} 
+          metalness={0.0}
+          side={THREE.DoubleSide}
+        />
       </mesh>
       
       <RetroCar />
@@ -132,7 +157,7 @@ function Scene() {
 
 export default function Portfolio3DMVP() {
   return (
-    <div className="w-full h-screen overflow-hidden bg-black text-white font-helvetica">
+    <div className="w-full h-screen overflow-hidden bg-[#f5f5f5] text-black font-helvetica">
       {/* Top overlay header */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between p-4 md:p-6">
 
@@ -143,7 +168,7 @@ export default function Portfolio3DMVP() {
   asciiFontSize={16}
 /> */}
 
-        <div className="text-sm opacity-70">Scroll to slide ▶</div>
+          <div className="text-sm opacity-60 text-gray-700">Scroll to slide ▶</div>
       </div>
 
       <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
