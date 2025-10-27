@@ -1,6 +1,6 @@
 import { Center, Scroll, ScrollControls, useGLTF, useScroll } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import carUrl from "./assets/free_1975_porsche_911_930_turbo.glb?url"; // Vite resolves to a real URL
 import './index.css';
 import * as THREE from "three";
@@ -19,7 +19,7 @@ import * as THREE from "three";
 // Define discrete viewpoints the camera will slide between
 const VIEWS = [
   // Far away full reveal
-  { p: [0, 3, 12], l: [0, 0, 0], label: "The Icon Reborn", description: "Timeless design meets modern innovation" },
+  { p: [0, 3, 12], l: [0, 0, 0], label: "ADNAN KHAYYAT", description: "Timeless design meets modern innovation" },
   
   // Perfect side shot
   { p: [8, 0.8, 0], l: [0, 0, 0], label: "Pure Profile", description: "Classic lines, legendary performance" },
@@ -155,9 +155,98 @@ function Scene() {
   );
 }
 
+function StartupTestScreen() {
+  const [text, setText] = useState('');
+  const [showMain, setShowMain] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [showCursor, setShowCursor] = useState(true);
+  const [glitchOffset, setGlitchOffset] = useState(0);
+  
+  // Cursor blink effect
+  useEffect(() => {
+    const cursorBlink = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 530);
+    return () => clearInterval(cursorBlink);
+  }, []);
+  
+  // Subtle glitch effect
+  useEffect(() => {
+    const glitch = setInterval(() => {
+      setGlitchOffset(Math.random() * 4 - 2);
+      setTimeout(() => setGlitchOffset(0), 50);
+    }, 2000);
+    return () => clearInterval(glitch);
+  }, []);
+  
+  useEffect(() => {
+    const allChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?/~`ADNAN KHAYYAT ALL RIGHTS RESERVED 2025 2026';
+    let index = 0;
+    const typingSpeed = 35;
+    
+    const typing = setInterval(() => {
+      if (index < allChars.length) {
+        setText(allChars.slice(0, index + 1));
+        index++;
+      } else {
+        clearInterval(typing);
+        
+        // Pause for 1 second after typing all characters
+        setTimeout(() => {
+          setShowMain(true);
+          setTimeout(() => {
+            setVisible(false);
+          }, 800);
+        }, 800);
+      }
+    }, typingSpeed);
+    
+    return () => clearInterval(typing);
+  }, []);
+  
+  if (!visible) return null;
+  
+  return (
+    <div 
+      className={`fixed inset-0 z-50 bg-black text-white transition-opacity duration-800 ${showMain ? 'opacity-0' : 'opacity-100'}`}
+      style={{ pointerEvents: showMain ? 'none' : 'auto' }}
+    >
+      <div 
+        className="text-9xl font-helvetica tracking-normal break-all p-8 transition-transform duration-50"
+        style={{ transform: `translateX(${glitchOffset}px)` }}
+      >
+        {text}
+        {showCursor && <span className="inline-block w-[4px] h-[1em] bg-white ml-2 animate-pulse">▊</span>}
+      </div>
+      
+      {/* Scan line effect */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div 
+          className="w-full h-[2px] bg-white opacity-20 animate-scan"
+          style={{
+            animation: 'scan 3s linear infinite',
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+// Add scan animation to styles
+const scanStyle = document.createElement('style');
+scanStyle.textContent = `
+  @keyframes scan {
+    0% { transform: translateY(0); opacity: 0.2; }
+    50% { opacity: 0.4; }
+    100% { transform: translateY(100vh); opacity: 0.2; }
+  }
+`;
+document.head.appendChild(scanStyle);
+
 export default function Portfolio3DMVP() {
   return (
     <div className="w-full h-screen overflow-hidden bg-[#f5f5f5] text-black font-helvetica">
+      <StartupTestScreen />
       {/* Top overlay header */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between p-4 md:p-6">
 
@@ -185,10 +274,10 @@ export default function Portfolio3DMVP() {
                   className="h-screen w-full flex items-center justify-center"
                 >
                   <div className="max-w-xl px-6 text-center">
-                    <h1 className="text-3xl md:text-5xl font-bold mb-3">
-                      {v.label}
-                    </h1>
-                    <p className="text-base md:text-lg opacity-80">
+                     <h1 className="text-xl md:text-8xl font-bold mb-3 tracking-tight">
+                       {v.label}
+                     </h1>
+                    <p className="text-base md:text-lg opacity-80 text-gray-800">
                       {v.description || `View ${i + 1} of ${VIEWS.length}`}
                     </p>
                   </div>
