@@ -1,3 +1,14 @@
 @import "tailwindcss";
-html, body, #root { height: 100%; }
+html, body, #root { height: 100%; font-family: 'Helvetica Neue', sans-serif;}
 body { margin: 0; }
+
+/* Lens effects for ultra-realistic car showroom */
+.lens-effects {
+  filter: 
+    contrast(1.1) 
+    brightness(1.05) 
+    saturate(1.2) 
+    blur(0.5px);
+  backdrop-filter: blur(0.5px);
+}
+

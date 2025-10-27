@@ -1,9 +1,9 @@
-import { Center, ContactShadows, Scroll, ScrollControls, useGLTF, useScroll, Environment } from "@react-three/drei";
+import { Center, Scroll, ScrollControls, useGLTF, useScroll } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef, useEffect } from "react";
-import carUrl from "./assets/lb-works_ferrari_f40_-__free.glb?url"; // Vite resolves to a real URL
+import { useRef } from "react";
+import ASCIIText from "./ASCIIText";
+import carUrl from "./assets/free_1975_porsche_911_930_turbo.glb?url"; // Vite resolves to a real URL
 import './index.css';
-import * as THREE from "three";
 
 /**
  * Minimal 3D scroll-"slides" portfolio using React Three Fiber.
@@ -18,33 +18,35 @@ import * as THREE from "three";
 
 // Define discrete viewpoints the camera will slide between
 const VIEWS = [
-  // position, lookAt
-  { p: [3.2, 2.2, 4.2], l: [0, 0, 0], label: "Intro – Hello" },
-  { p: [-4.0, 1.4, 2.4], l: [0, 0, 0], label: "Work – Selected Projects" },
-  { p: [0.2, 5.0, 0.2], l: [0, 0, 0], label: "About – What I do" },
-  { p: [2.6, -2.2, -3.8], l: [0, 0, 0], label: "Contact – Let’s talk" },
+  // Far away full reveal
+  { p: [0, 3, 12], l: [0, 0, 0], label: "The Icon Reborn", description: "Timeless design meets modern innovation" },
+  
+  // Perfect side shot
+  { p: [8, 0.8, 0], l: [0, 0, 0], label: "Pure Profile", description: "Classic lines, legendary performance" },
+  
+  // Close-up front
+  { p: [0, 1.2, -3], l: [0, 1.5, 0], label: "First Impressions", description: "Where craftsmanship meets passion" },
+  
+  // Low angle hero shot
+  { p: [2, 0.3, 4], l: [0, 1, 0], label: "Road Dominance", description: "Power unleashed, control refined" },
+  
+  // Rear three-quarter
+  { p: [-6, 1.5, -4], l: [0, 0, 0], label: "Departure", description: "Leaving excellence in the distance" },
+  
+  // Extreme close-up detail
+  { p: [-0.8, 0.9, -2.5], l: [-0.8, 0.9, -2.5], label: "Detail Obsessed", description: "Perfection in every curve" },
+  
+  // High angle from roof
+  { p: [0, 5, 6], l: [0, -1, -6], label: "Aerial Perspective", description: "Admired from above, driven from within" },
+  
+  // Dynamic diagonal
+  { p: [5, 2.5, 6], l: [-5, -1, -6], label: "Dynamic Motion", description: "Always moving forward" },
 ];
 
 function RetroCar() {
   const { scene } = useGLTF(carUrl);
   
-  // Make the car materials more reflective and metallic
-  useEffect(() => {
-    scene.traverse((child) => {
-      if ('isMesh' in child && child.isMesh) {
-        const mesh = child as THREE.Mesh;
-        // Enhance material properties for realistic reflections
-        if (mesh.material && 'metalness' in mesh.material) {
-          const material = mesh.material as THREE.MeshStandardMaterial;
-          material.metalness = 0.9; // High metalness for reflections
-          material.roughness = 0.2; // Low roughness for shiny surface
-          material.envMapIntensity = 1.5; // Boost environment reflection
-          material.needsUpdate = true;
-        }
-      }
-    });
-  }, [scene]);
-  
+  // No material modifications - use default materials
   return <Center>
     <primitive object={scene} scale={1.2} position={[0, -1, 0]} />
   </Center>;
@@ -92,85 +94,59 @@ function CameraRig() {
 function Scene() {
   return (
     <>
-      {/* Dark ambient light for base visibility */}
-      <ambientLight intensity={0.3} />
-      
-      {/* Environment map for reflections */}
-      <Environment preset="night" />
-      
-      {/* Left spotlight box - Fluorescent Yellow */}
-      <group position={[-4, 1, 2]}>
-        <mesh>
-          <boxGeometry args={[0.6, 0.6, 0.8]} />
-          <meshStandardMaterial 
-            color="#FFFF00" 
-            emissive="#FFFF00" 
-            emissiveIntensity={2}
-            toneMapped={false}
+      {/* Ambient light for base visibility */}
+      {Array.from({ length: 12 }).map((_, index) => {
+        const angle = (index / 12) * Math.PI * 2; // Divide circle into 12 lights
+        const radius = 8; // Distance from car center
+        const x = Math.cos(angle) * radius;
+        const z = Math.sin(angle) * radius;
+        const hue = (index / 12) * 360; // Rainbow effect
+        
+        return (
+          <pointLight 
+            key={index} 
+            position={[x, 2, z]} 
+            intensity={50} 
+            color={`hsl(${hue}, 100%, 50%)`}
           />
-        </mesh>
-        <spotLight
-          position={[0, 0, 0]}
-          target-position={[4, -1, -2]}
-          angle={0.6}
-          penumbra={0.5}
-          intensity={150}
-          color="#FFFF00"
-          castShadow
-          distance={15}
-        />
-      </group>
+        );
+      })}
+      
 
-      {/* Right spotlight box - Fluorescent Purple */}
-      <group position={[4, 1, 2]}>
-        <mesh>
-          <boxGeometry args={[0.6, 0.6, 0.8]} />
-          <meshStandardMaterial 
-            color="#DD00FF" 
-            emissive="#DD00FF" 
-            emissiveIntensity={2}
-            toneMapped={false}
-          />
-        </mesh>
-        <spotLight
-          position={[0, 0, 0]}
-          target-position={[-4, -1, -2]}
-          angle={0.6}
-          penumbra={0.5}
-          intensity={150}
-          color="#DD00FF"
-          castShadow
-          distance={15}
-        />
-      </group>
-
-      {/* Top accent light */}
-      <pointLight position={[0, 4, 0]} intensity={30} color="#ffffff" />
+      
+      
+      
+      
+      {/* Simple floor without reflectors */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.2, 0]} receiveShadow>
+        <planeGeometry args={[200, 200]} />
+        <meshStandardMaterial color="#202020" />
+      </mesh>
       
       <RetroCar />
       <CameraRig/>
-      
-      <ContactShadows
-          position={[0, -1.2, 0]}
-          scale={12}
-          blur={3}
-          opacity={0.4}
-          far={8}
-        />
+
     </>
   );
 }
 
 export default function Portfolio3DMVP() {
   return (
-    <div className="w-full h-screen overflow-hidden bg-black text-white">
+    <div className="w-full h-screen overflow-hidden bg-black text-white font-helvetica">
       {/* Top overlay header */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between p-4 md:p-6">
-        <div className="font-semibold tracking-tight">Your Name</div>
+
+{/* 
+<ASCIIText
+  text='adnan khayyat'
+  enableWaves={true}
+  asciiFontSize={16}
+/> */}
+
         <div className="text-sm opacity-70">Scroll to slide ▶</div>
       </div>
 
-      <Canvas shadows camera={{ position: [3.2, 2.2, 4.2], fov: 52 }}>
+      <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
         {/* ScrollControls: pages === number of slides for full-screen “panels” */}
         <ScrollControls pages={VIEWS.length} damping={0.2}>
           <Scene />
@@ -188,9 +164,7 @@ export default function Portfolio3DMVP() {
                       {v.label}
                     </h1>
                     <p className="text-base md:text-lg opacity-80">
-                      This is slide {i + 1}. Replace with your own copy, links,
-                      and CTAs. The camera snaps to a new angle of the cube
-                      for each section as you scroll.
+                      {v.description || `View ${i + 1} of ${VIEWS.length}`}
                     </p>
                   </div>
                 </section>
