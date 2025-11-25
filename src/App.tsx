@@ -1,4 +1,4 @@
-import { Center, Scroll, ScrollControls, useGLTF, useScroll } from "@react-three/drei";
+import { Center, Scroll, ScrollControls, useGLTF, useScroll, Grid } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useRef, useEffect, useState } from "react";
 import carUrl from "./assets/free_1975_porsche_911_930_turbo.glb?url";
@@ -122,12 +122,34 @@ function CameraRig() {
   return null;
 }
 
+function BackgroundRig() {
+  const { scene } = useThree();
+  const scroll = useScroll();
+  
+  useFrame(() => {
+    const t = scroll.offset;
+    const floatIdx = t * (VIEWS.length - 1);
+    const currentIdx = Math.floor(floatIdx);
+    const nextIdx = Math.min(currentIdx + 1, VIEWS.length - 1);
+    const progress = floatIdx - currentIdx;
+
+    const currentColor = new THREE.Color(VIEWS[currentIdx].color);
+    const nextColor = new THREE.Color(VIEWS[nextIdx].color);
+    const activeColor = currentColor.lerp(nextColor, progress);
+    
+    // Background is a very light tint of the active color (90% white mix)
+    const bgColor = activeColor.clone().lerp(new THREE.Color('#ffffff'), 0.9);
+    
+    scene.background = bgColor;
+    scene.fog = new THREE.FogExp2(bgColor.getHexString(), 0.02);
+  });
+  return null;
+}
+
 function RetroCar() {
   const { scene } = useGLTF(carUrl);
   const gl = useThree((state) => state.gl);
   const scroll = useScroll();
-  
-  // Store references to materials for performance
   const materialsRef = useRef<THREE.MeshStandardMaterial[]>([]);
 
   useEffect(() => {
@@ -143,14 +165,11 @@ function RetroCar() {
         const mesh = child as THREE.Mesh;
         if (mesh.material) {
           const material = mesh.material as THREE.MeshStandardMaterial;
-          // Setup base material properties
           material.envMap = renderTarget.texture;
           material.envMapIntensity = 1.0;
           material.roughness = 0.2;
           material.metalness = 0.8;
           material.needsUpdate = true;
-          
-          // Add to refs for animation
           materialsRef.current.push(material);
         }
       }
@@ -164,18 +183,15 @@ function RetroCar() {
   
   useFrame(() => {
     const t = scroll.offset;
-    // Calculate current section index (float)
     const floatIdx = t * (VIEWS.length - 1);
     const currentIdx = Math.floor(floatIdx);
     const nextIdx = Math.min(currentIdx + 1, VIEWS.length - 1);
     const progress = floatIdx - currentIdx;
 
-    // Interpolate color
     const currentColor = new THREE.Color(VIEWS[currentIdx].color);
     const nextColor = new THREE.Color(VIEWS[nextIdx].color);
     const finalColor = currentColor.lerp(nextColor, progress);
 
-    // Apply to all materials
     materialsRef.current.forEach(mat => {
       mat.color.copy(finalColor);
     });
@@ -189,11 +205,24 @@ function RetroCar() {
 function Scene() {
   return (
     <>
-      <color attach="background" args={['#ffffff']} />
+      <BackgroundRig />
       <ambientLight intensity={2.0} color="#ffffff" />
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={2} castShadow />
       <pointLight position={[-10, -10, -10]} intensity={1} />
       
+      {/* Infinite Retro Grid */}
+      <Grid
+        position={[0, -1.15, 0]}
+        args={[100, 100]}
+        cellColor="#cccccc"
+        sectionColor="#ffffff"
+        sectionSize={10}
+        cellSize={1}
+        fadeDistance={30}
+        fadeStrength={1.5}
+        infiniteGrid
+      />
+
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.2, 0]} receiveShadow>
         <planeGeometry args={[100, 100]} />
         <shadowMaterial transparent opacity={0.1} />
@@ -205,7 +234,6 @@ function Scene() {
   );
 }
 
-// Updated GlitchText to handle color
 const GlitchText = ({ text, color }: { text: string, color: string }) => {
   const [displayText, setDisplayText] = useState(text);
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
@@ -223,7 +251,7 @@ const GlitchText = ({ text, color }: { text: string, color: string }) => {
                   .split("")
                   .map((letter, index) => {
                     if (index < iterations) {
-                      return text[index];
+                      return letter;
                     }
                     return chars[Math.floor(Math.random() * chars.length)];
                   })
@@ -258,7 +286,7 @@ const GlitchText = ({ text, color }: { text: string, color: string }) => {
 
 export default function Portfolio3DMVP() {
   return (
-    <div className="w-full h-screen overflow-hidden bg-white text-black font-mono">
+    <div className="w-full h-screen overflow-hidden bg-transparent text-black font-mono transition-colors duration-500">
       <Header />
       
       <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.04] mix-blend-multiply"
@@ -286,11 +314,9 @@ export default function Portfolio3DMVP() {
                 <section key={i} className="h-screen w-full relative flex items-center px-4 md:px-20">
                   <div 
                     className={`w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 pointer-events-none`}
-                    // Apply color to the entire text block for unity
                     style={{ color: view.color }}
                   >
                     
-                    {/* Dynamic Alignment Based on View */}
                     {view.align === 'left' && (
                       <div className="md:col-span-5 flex flex-col justify-center h-full py-12">
                         <div className="border-t-2 border-current pt-4 w-12 mb-8"></div>
@@ -346,7 +372,6 @@ export default function Portfolio3DMVP() {
                     
                   </div>
                   
-                  {/* Background large index number */}
                   <div className="absolute bottom-0 right-0 text-[20vw] leading-none font-black opacity-[0.03] pointer-events-none select-none" style={{ color: view.color }}>
                     0{i+1}
                   </div>

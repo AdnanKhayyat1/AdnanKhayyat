@@ -20,7 +20,6 @@ export const Header = () => {
           <span className="inline-block transition-transform group-hover:-translate-y-1 group-hover:translate-x-1">↗</span>
         </a>
         <div className="mt-2 text-right text-xs md:text-sm font-mono opacity-80 hidden md:block">
-          AVAILABLE FOR<br/>IMMEDIATE DEPLOYMENT
         </div>
       </div>
     </header>
