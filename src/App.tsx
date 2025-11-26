@@ -12,6 +12,8 @@ const VIEWS = [
     p: [0, 2, 14], 
     l: [0, 0, 0], 
     title: "ENGINEER", 
+    translation: "مهندس",
+    translationKorean: "엔지니어",
     subtitle: "FULL_STACK",
     price: "2025.00",
     code: "01-MAIN",
@@ -22,6 +24,8 @@ const VIEWS = [
     p: [8, 1.5, 6], 
     l: [0, 0, 0], 
     title: "EXPERIENCE", 
+    translation: "خبرة",
+    translationKorean: "경력",
     subtitle: "REMI_LABS_FOUNDING",
     price: "2000.00",
     code: "02-EXP",
@@ -37,6 +41,8 @@ const VIEWS = [
     p: [-4, 1, 8], 
     l: [0, 0, 0], 
     title: "STARTUP", 
+    translation: "شركة ناشئة",
+    translationKorean: "스타트업",
     subtitle: "BRIDGE_CO-FOUNDER",
     price: "0001.00",
     code: "03-WORK",
@@ -52,6 +58,8 @@ const VIEWS = [
     p: [-7, 4, -7], 
     l: [0, 0, 0], 
     title: "NEIGHBOR", 
+    translation: "جار",
+    translationKorean: "이웃",
     subtitle: "MARKETPLACE_SCALE",
     price: "3000.00",
     code: "04-SCALE",
@@ -67,6 +75,8 @@ const VIEWS = [
     p: [0, 10, 0], 
     l: [0, 0, 0], 
     title: "RESEARCH", 
+    translation: "أبحاث",
+    translationKorean: "연구",
     subtitle: "TRAFFIC_AI_MODEL",
     price: "0000.00",
     code: "05-RSRCH",
@@ -82,6 +92,8 @@ const VIEWS = [
     p: [5, 2, 8], 
     l: [0, 0, 0], 
     title: "CONTACT", 
+    translation: "تواصل",
+    translationKorean: "연락",
     subtitle: "HIRE_IMMEDIATELY",
     price: "TOTAL",
     code: "06-END",
@@ -234,16 +246,30 @@ function Scene() {
   );
 }
 
-const GlitchText = ({ text, color }: { text: string, color: string }) => {
+const GlitchText = ({ text, color, translation, translationKorean }: { text: string, color: string, translation?: string, translationKorean?: string }) => {
   const [displayText, setDisplayText] = useState(text);
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
   const elementRef = useRef<HTMLDivElement>(null);
+  
+  // Memoize the chars selection to avoid changing it on every render, 
+  // but we want it to potentially change on each "glitch" session or just be stable?
+  // The requirement is "use that randomly".
+  // If we want it to be random every time the glitch effect runs (on intersection),
+  // we should move the selection inside the effect or use a ref/state that updates on intersection.
   
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            // Randomly select between translation (Arabic) and translationKorean
+            const options = [];
+            if (translation) options.push(translation);
+            if (translationKorean) options.push(translationKorean);
+            
+            const selectedChars = options.length > 0 
+              ? options[Math.floor(Math.random() * options.length)] 
+              : "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+
             let iterations = 0;
             const interval = setInterval(() => {
               setDisplayText(
@@ -253,7 +279,7 @@ const GlitchText = ({ text, color }: { text: string, color: string }) => {
                     if (index < iterations) {
                       return letter;
                     }
-                    return chars[Math.floor(Math.random() * chars.length)];
+                    return selectedChars[Math.floor(Math.random() * selectedChars.length)];
                   })
                   .join("")
               );
@@ -275,7 +301,7 @@ const GlitchText = ({ text, color }: { text: string, color: string }) => {
     }
 
     return () => observer.disconnect();
-  }, [text]);
+  }, [text, translation, translationKorean]);
 
   return (
     <div ref={elementRef} className="relative inline-block transition-colors duration-300" style={{ color }}>
@@ -323,7 +349,7 @@ export default function Portfolio3DMVP() {
                         <div>
                           <div className="text-xs mb-2 border border-current inline-block px-2 py-1 rounded-full">{view.code}</div>
                           <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-[0.8] mb-4 uppercase whitespace-nowrap">
-                            <GlitchText text={view.title} color={view.color} />
+                            <GlitchText text={view.title} color={view.color} translation={view.translation} translationKorean={view.translationKorean} />
                           </h2>
                           <p className="text-lg md:text-xl font-bold opacity-60 tracking-widest uppercase">
                             {view.subtitle}
@@ -344,7 +370,7 @@ export default function Portfolio3DMVP() {
                           <div className="border-t-2 border-current pt-4 w-12 mb-8"></div>
                           <div className="text-xs mb-2 border border-current inline-block px-2 py-1 rounded-full">{view.code}</div>
                           <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-[0.8] mb-4 uppercase whitespace-nowrap">
-                            <GlitchText text={view.title} color={view.color} />
+                            <GlitchText text={view.title} color={view.color} translation={view.translation} translationKorean={view.translationKorean} />
                           </h2>
                           <p className="text-lg md:text-xl font-bold opacity-60 tracking-widest uppercase">
                             {view.subtitle}
@@ -362,7 +388,7 @@ export default function Portfolio3DMVP() {
                        <div className="md:col-span-12 flex flex-col justify-center items-center text-center h-full py-12">
                          <div className="border-t-2 border-current pt-4 w-12 mb-8"></div>
                          <h2 className="text-5xl md:text-9xl font-black tracking-tighter leading-[0.8] mb-4 uppercase whitespace-nowrap">
-                           <GlitchText text={view.title} color={view.color} />
+                           <GlitchText text={view.title} color={view.color} translation={view.translation} translationKorean={view.translationKorean} />
                          </h2>
                           <a href="mailto:adnankhayyat@gmail.com" className="text-2xl md:text-4xl underline decoration-4 underline-offset-8 hover:opacity-50 transition-opacity px-4 py-2 pointer-events-auto text-current">
                             adnankhayyat@gmail.com
