@@ -13,10 +13,17 @@ export const Header = () => {
 
       <div className="flex flex-col items-end pointer-events-auto">
         <a 
-          href="mailto:adnankhayyat@gmail.com" 
+          href="mailto:akhayyat20@gmail.com" 
           className="group flex items-center gap-2 text-sm md:text-base font-bold hover:underline decoration-2 underline-offset-4"
         >
           <span>HIRE ME</span>
+          <span className="inline-block transition-transform group-hover:-translate-y-1 group-hover:translate-x-1">↗</span>
+        </a>
+        <a 
+          href="/blog" 
+          className="group flex items-center gap-2 text-sm md:text-base font-bold hover:underline decoration-2 underline-offset-4"
+        >
+          <span>BLOG</span>
           <span className="inline-block transition-transform group-hover:-translate-y-1 group-hover:translate-x-1">↗</span>
         </a>
         <div className="mt-2 text-right text-xs md:text-sm font-mono opacity-80 hidden md:block">

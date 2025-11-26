@@ -1,4 +1,7 @@
 import { Center, Scroll, ScrollControls, useGLTF, useScroll, Grid } from "@react-three/drei";
+import { Routes, Route } from "react-router-dom";
+import Blog from "./Blog";
+import BlogPost from "./BlogPost";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useRef, useEffect, useState } from "react";
 import carUrl from "./assets/free_1975_porsche_911_930_turbo.glb?url";
@@ -310,7 +313,7 @@ const GlitchText = ({ text, color, translation, translationKorean }: { text: str
   );
 };
 
-export default function Portfolio3DMVP() {
+function Portfolio() {
   return (
     <div className="w-full h-screen overflow-hidden bg-transparent text-black font-mono transition-colors duration-500">
       <Header />
@@ -408,5 +411,15 @@ export default function Portfolio3DMVP() {
         </ScrollControls>
       </Canvas>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Portfolio />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:id" element={<BlogPost />} />
+    </Routes>
   );
 }
