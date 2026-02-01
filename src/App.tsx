@@ -11,30 +11,25 @@ const VIEWS = [
   { 
     p: [0, 2, 14], 
     l: [0, 0, 0], 
-    title: "ENGINEER", 
-    translation: "مهندس",
-    translationKorean: "엔지니어",
-    subtitle: "FULL_STACK",
+    title: "Software", 
+    subtitle: "I have 3+ years of experience in software development. I currently work at Ambrook in New York.",
     price: "2025.00",
     code: "01-MAIN",
     align: "left",
-    color: "#FF3300" // International Orange
+    color: "#FF3B30" // Vivid red-orange
   },
   { 
     p: [8, 1.5, 6], 
     l: [0, 0, 0], 
-    title: "EXPERIENCE", 
-    translation: "خبرة",
-    translationKorean: "경력",
-    subtitle: "REMI_LABS_FOUNDING",
+    title: "FULL-STACK", 
+    subtitle: "I work at Ambrook, an ag-tech startup that powers the financial infrastructure of the agricultural and ag-adjacent industries. Previously, I worked at Remi Labs, a YC startup, as the 10th founding engineer for 2 years.",
     price: "2000.00",
-    code: "02-EXP",
+    code: "02-PREV_EXPERIENCE",
     align: "right",
-    color: "#CCFF00", // Volt Green
+    color: "#00C853", // Deep neon green (higher contrast)
     details: [
-      "MANAGED 27K+ PROJECTS",
-      "$2M MRR SYSTEM",
-      "REDUCED DUPLICATION 93%"
+      "Built a platform that manages 27K+ roofing projects",
+      "Reduced duplication by 93%",
     ]
   },
   { 
@@ -43,33 +38,28 @@ const VIEWS = [
     title: "STARTUP", 
     translation: "شركة ناشئة",
     translationKorean: "스타트업",
-    subtitle: "BRIDGE_CO-FOUNDER",
+    subtitle: "Co-founded a startup that provides real-time transcription services to businesses. Integrated with 30+ local businesses and transcribed dozens of hours of audio.",
     price: "0001.00",
     code: "03-WORK",
     align: "left",
-    color: "#0066FF", // Electric Blue
+    color: "#2962FF", // Electric blue (slightly deeper)
     details: [
       "REAL-TIME TRANSCRIPTION",
       "73% ACCURACY MVP",
-      "WON 1ST PLACE"
+      "WON 1ST PLACE IN SANDBOX HACKATHON"
     ]
   },
   { 
     p: [-7, 4, -7], 
     l: [0, 0, 0], 
-    title: "NEIGHBOR", 
-    translation: "جار",
-    translationKorean: "이웃",
-    subtitle: "MARKETPLACE_SCALE",
+    title: "INTERNSHIPS", 
+    translation: "دراسة",
+    translationKorean: "졸업",
     price: "3000.00",
-    code: "04-SCALE",
+    code: "04-INTERNSHIPS",
     align: "right",
-    color: "#FF0080", // Magenta
-    details: [
-      "3TB+ DATA GRAPH",
-      "25+ FEATURES SHIPPED",
-      "RUBY ON RAILS"
-    ]
+    color: "#D500F9", // Deep magenta/violet
+    subtitle: "I did 3 internships during college. First one was at Udemy where I migrated their busiest frontend entrypoints to NextJs, leveraging NextJs's server-side rendering to improve performance and SEO. The other internships were in Crypto and Marketplace startups based in Lehi, UT and NYC respectively.",
   },
   { 
     p: [0, 10, 0], 
@@ -77,15 +67,14 @@ const VIEWS = [
     title: "RESEARCH", 
     translation: "أبحاث",
     translationKorean: "연구",
-    subtitle: "TRAFFIC_AI_MODEL",
     price: "0000.00",
     code: "05-RSRCH",
     align: "left",
-    color: "#00FF99", // Spring Green
+    color: "#00B8D4", // Cyan/teal (more readable on light bg)
+    subtitle: "Co-authored a paper on traffic prediction using LSTM. Processed 2TB+ of traffic light data accross every intersection in the state of Utah in 15 minute increments.",
     details: [
       "LSTM TRAFFIC PREDICTION",
       "2TB+ DATA PROCESSING",
-      "PUBLISHED AUTHOR"
     ]
   },
   { 
@@ -98,9 +87,22 @@ const VIEWS = [
     price: "TOTAL",
     code: "06-END",
     align: "center",
-    color: "#000000" // Back to Black/Final
+    color: "#111827" // Soft black (charcoal)
   },
 ];
+
+const BODY_TEXT_BASE = new THREE.Color("#111827"); // charcoal
+function getBodyTextColor(accentHex: string) {
+  // Dark, readable text that still carries the accent tint.
+  const c = new THREE.Color(accentHex).lerp(BODY_TEXT_BASE, 0.72);
+  return `#${c.getHexString()}`;
+}
+
+function getCarPaintColor(accent: THREE.Color) {
+  // Secondary palette color: small hue shift + a touch more saturation/lightness.
+  // Keeps it "matching" without being identical to the text accent.
+  return accent.clone().offsetHSL(0.04, 0.06, 0.02);
+}
 
 function CameraRig() {
   const { camera } = useThree();
@@ -205,7 +207,8 @@ function RetroCar() {
     const finalColor = currentColor.lerp(nextColor, progress);
 
     materialsRef.current.forEach(mat => {
-      mat.color.copy(finalColor);
+      const carColor = getCarPaintColor(finalColor);
+      mat.color.copy(carColor);
     });
   });
 
@@ -311,9 +314,68 @@ const GlitchText = ({ text, color, translation, translationKorean }: { text: str
 };
 
 export default function Portfolio3DMVP() {
+  const [loadingStage, setLoadingStage] = useState<"visible" | "fading" | "hidden">(
+    "visible"
+  );
+
+  useEffect(() => {
+    const FADE_MS = 500;
+    const t1 = window.setTimeout(() => setLoadingStage("fading"), 5000);
+    const t2 = window.setTimeout(() => setLoadingStage("hidden"), 5000 + FADE_MS);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (loadingStage === "hidden") return;
+
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+
+    const preventDefault = (e: Event) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener("wheel", preventDefault, { passive: false });
+    window.addEventListener("touchmove", preventDefault, { passive: false });
+
+    return () => {
+      window.removeEventListener("wheel", preventDefault as EventListener);
+      window.removeEventListener("touchmove", preventDefault as EventListener);
+      document.documentElement.style.overflow = prevHtmlOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+    };
+  }, [loadingStage]);
+
   return (
     <div className="w-full h-screen overflow-hidden bg-transparent text-black font-mono transition-colors duration-500">
       <Header />
+
+      {loadingStage !== "hidden" && (
+        <div
+          className={[
+            "fixed inset-0 z-[9999] flex items-center justify-center bg-black text-white",
+            "transition-opacity duration-500 ease-out",
+            loadingStage === "fading" ? "opacity-0" : "opacity-100",
+          ].join(" ")}
+          style={{ overscrollBehavior: "none" }}
+          onWheel={(e) => e.preventDefault()}
+          onTouchMove={(e) => e.preventDefault()}
+          aria-live="polite"
+          aria-busy="true"
+        >
+          <div className="text-center px-6">
+            <div className="text-[10px] tracking-[0.4em] uppercase opacity-70">
+              Loading
+            </div>
+          </div>
+        </div>
+      )}
       
       <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.04] mix-blend-multiply"
            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
@@ -351,11 +413,17 @@ export default function Portfolio3DMVP() {
                           <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-[0.8] mb-4 uppercase whitespace-nowrap">
                             <GlitchText text={view.title} color={view.color} translation={view.translation} translationKorean={view.translationKorean} />
                           </h2>
-                          <p className="text-lg md:text-xl font-bold opacity-60 tracking-widest uppercase">
+                          <p
+                            className="text-lg md:text-xl font-bold tracking-widest uppercase"
+                            style={{ color: getBodyTextColor(view.color) }}
+                          >
                             {view.subtitle}
                           </p>
                           {view.details && (
-                             <ul className="mt-8 text-sm font-mono opacity-80 space-y-1 border-l-2 border-current pl-4">
+                             <ul
+                               className="mt-8 text-sm font-mono space-y-1 border-l-2 pl-4"
+                               style={{ color: getBodyTextColor(view.color), borderColor: view.color }}
+                             >
                                {view.details.map((d, idx) => <li key={idx}>{d}</li>)}
                              </ul>
                           )}
@@ -372,11 +440,17 @@ export default function Portfolio3DMVP() {
                           <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-[0.8] mb-4 uppercase whitespace-nowrap">
                             <GlitchText text={view.title} color={view.color} translation={view.translation} translationKorean={view.translationKorean} />
                           </h2>
-                          <p className="text-lg md:text-xl font-bold opacity-60 tracking-widest uppercase">
+                          <p
+                            className="text-lg md:text-xl font-bold tracking-widest uppercase"
+                            style={{ color: getBodyTextColor(view.color) }}
+                          >
                             {view.subtitle}
                           </p>
                           {view.details && (
-                             <ul className="mt-8 text-sm font-mono opacity-80 space-y-1 border-r-2 border-current pr-4">
+                             <ul
+                               className="mt-8 text-sm font-mono space-y-1 border-r-2 pr-4"
+                               style={{ color: getBodyTextColor(view.color), borderColor: view.color }}
+                             >
                                {view.details.map((d, idx) => <li key={idx}>{d}</li>)}
                              </ul>
                           )}
@@ -390,8 +464,8 @@ export default function Portfolio3DMVP() {
                          <h2 className="text-5xl md:text-9xl font-black tracking-tighter leading-[0.8] mb-4 uppercase whitespace-nowrap">
                            <GlitchText text={view.title} color={view.color} translation={view.translation} translationKorean={view.translationKorean} />
                          </h2>
-                          <a href="mailto:adnankhayyat@gmail.com" className="text-2xl md:text-4xl underline decoration-4 underline-offset-8 hover:opacity-50 transition-opacity px-4 py-2 pointer-events-auto text-current">
-                            adnankhayyat@gmail.com
+                          <a href="https://www.linkedin.com/in/adnankhayyat/" className="text-2xl md:text-4xl underline decoration-4 underline-offset-8 hover:opacity-50 transition-opacity px-4 py-2 pointer-events-auto text-current">
+                            LINKEDIN
                           </a>
                        </div>
                     )}
