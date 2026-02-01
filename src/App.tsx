@@ -5,6 +5,7 @@ import carUrl from "./assets/free_1975_porsche_911_930_turbo.glb?url";
 import './index.css';
 import * as THREE from "three";
 import { Header } from "./Header";
+import { Blog } from "./Blog";
 
 // Data derived from CV with Bold Colors
 const VIEWS = [
@@ -314,11 +315,15 @@ const GlitchText = ({ text, color, translation, translationKorean }: { text: str
 };
 
 export default function Portfolio3DMVP() {
+  const isBlogPage =
+    typeof window !== "undefined" && window.location.pathname === "/blog";
+
   const [loadingStage, setLoadingStage] = useState<"visible" | "fading" | "hidden">(
     "visible"
   );
 
   useEffect(() => {
+    if (isBlogPage) return;
     const FADE_MS = 500;
     const t1 = window.setTimeout(() => setLoadingStage("fading"), 5000);
     const t2 = window.setTimeout(() => setLoadingStage("hidden"), 5000 + FADE_MS);
@@ -326,9 +331,10 @@ export default function Portfolio3DMVP() {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
     };
-  }, []);
+  }, [isBlogPage]);
 
   useEffect(() => {
+    if (isBlogPage) return;
     if (loadingStage === "hidden") return;
 
     const prevHtmlOverflow = document.documentElement.style.overflow;
@@ -350,7 +356,9 @@ export default function Portfolio3DMVP() {
       document.documentElement.style.overflow = prevHtmlOverflow;
       document.body.style.overflow = prevBodyOverflow;
     };
-  }, [loadingStage]);
+  }, [isBlogPage, loadingStage]);
+
+  if (isBlogPage) return <Blog />;
 
   return (
     <div className="w-full h-screen overflow-hidden bg-transparent text-black font-mono transition-colors duration-500">
@@ -414,7 +422,7 @@ export default function Portfolio3DMVP() {
                             <GlitchText text={view.title} color={view.color} translation={view.translation} translationKorean={view.translationKorean} />
                           </h2>
                           <p
-                            className="text-lg md:text-xl font-bold tracking-widest uppercase"
+                            className="text-left text-base md:text-lg font-bold tracking-widest uppercase"
                             style={{ color: getBodyTextColor(view.color) }}
                           >
                             {view.subtitle}
@@ -441,7 +449,7 @@ export default function Portfolio3DMVP() {
                             <GlitchText text={view.title} color={view.color} translation={view.translation} translationKorean={view.translationKorean} />
                           </h2>
                           <p
-                            className="text-lg md:text-xl font-bold tracking-widest uppercase"
+                            className="text-left text-base md:text-lg font-bold tracking-widest uppercase"
                             style={{ color: getBodyTextColor(view.color) }}
                           >
                             {view.subtitle}

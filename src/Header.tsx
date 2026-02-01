@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { ExpandedHeader } from "./ExpandedHeader";
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
@@ -30,31 +31,18 @@ export const Header = () => {
   return (
     <div
       ref={rootRef}
-      className={[
-        "fixed top-0 left-0 w-full z-40",
-        // When open, the hover-zone includes the dropped panel, so it stays open
-        // until you fully exit the whole expanded header area.
-        open ? "h-[90vh]" : "h-auto",
-      ].join(" ")}
+      className="fixed top-0 left-0 w-full z-40"
     >
       {/* Slide-down panel */}
-      <div
-        className={[
-          "absolute inset-x-0 top-0 bg-black",
-          // "full screen header in black, minus some 1/3 bottom padding"
-          // Interpreted as: cover ~2/3 of the viewport height.
-          "h-full",
-          "transform-gpu",
-          open ? "translate-y-0 transition-transform duration-500 ease-out" : "-translate-y-full duration-0",
-          open ? "pointer-events-auto" : "pointer-events-none",
-        ].join(" ")}
-        id="header-menu"
-      />
+      <ExpandedHeader open={open} onClose={() => setOpen(false)} id="header-menu" />
 
       {/* Foreground header content */}
       <header
         className={[
           "relative p-4 md:p-6 flex justify-between items-start pointer-events-auto",
+          // When the menu is open, hide the normal header so the expanded panel
+          // reads as a clean black box (no overlay).
+          open ? "opacity-0 pointer-events-none" : "opacity-100",
           // Closed: original color (black) and normal blending.
           // Open: white text with mix-blend-difference for strong contrast.
           open ? "mix-blend-difference text-white" : "mix-blend-normal text-black",

@@ -2,6 +2,11 @@
 html, body, #root { height: 100%; font-family: 'Helvetica Neue', sans-serif;}
 body { margin: 0; }
 
+.font-inter {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
 /* Lens effects for ultra-realistic car showroom */
 .lens-effects {
   filter: 
