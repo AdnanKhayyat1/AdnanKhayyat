@@ -6,7 +6,7 @@ export function Blog() {
       <Header />
       <main className="pt-28 px-3 md:px-4 ">
         <BlogHeader />
-        <BlogThumbnail title="The Future of AI" date="2026-01-01" id="1" />
+        <BlogThumbnail title="Blog1" date="2026-01-01" id="1" />
       </main>
     </div>
   );
@@ -23,10 +23,10 @@ export function BlogHeader() {
 export function BlogThumbnail({ title, date, id }: { title: string, date: string, id: string }) {
   return (
     <div
-      className="w-full border-2 rounded-xs hover:bg-blue-200 hover:cursor-pointer transition-all duration-300"
+      className="w-full border-2 rounded-lg hover:bg-blue-200 hover:cursor-pointer transition-all duration-300"
       data-id={id}
     >
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-center px-2 py-4">
         <div className="text-2xl font-bold">{title}</div>
         <div className="text-sm text-gray-500">{date}</div>
       </div>
