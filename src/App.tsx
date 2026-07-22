@@ -6,84 +6,90 @@ import './index.css';
 import * as THREE from "three";
 import { Header } from "./Header";
 import { Blog } from "./Blog";
+import { SlopIntro } from "./SlopIntro";
 
-// Data derived from CV with Bold Colors
+// One work experience per scroll section, from the CV
 const VIEWS = [
-  { 
-    p: [0, 2, 14], 
-    l: [0, 0, 0], 
-    title: "Software", 
-    subtitle: "I have 3+ years of experience in software development. I currently work at Ambrook in New York.",
+  {
+    p: [0, 2, 14],
+    l: [0, 0, 0],
+    title: "AMBROOK",
+    subtitle: "Software Engineer II · New York, NY · Jul 2025 – Present. Building financial infrastructure for agriculture.",
     price: "2025.00",
-    code: "01-MAIN",
+    code: "01-AMBROOK",
     align: "left",
-    color: "#FF3B30" // Vivid red-orange
+    color: "#FF3B30", // Vivid red-orange
+    details: [
+      "CUT GCP COSTS BY $193K/YR",
+      "AI-POWERED WALLET FRAUD DETECTION",
+      "SYNCED 6M+ RESOURCES FOR 8,500 CUSTOMERS",
+      "SHIPPED QUICKBOOKS IMPORTS: 62K+ ITEMS, 200 INTEGRATIONS",
+      "CD DEPLOY TIME: 2 HRS → 30 MIN",
+    ]
   },
-  { 
-    p: [8, 1.5, 6], 
-    l: [0, 0, 0], 
-    title: "FULL-STACK", 
-    subtitle: "I work at Ambrook, an ag-tech startup that powers the financial infrastructure of the agricultural and ag-adjacent industries. Previously, I worked at Remi Labs, a YC startup, as the 10th founding engineer for 2 years.",
-    price: "2000.00",
-    code: "02-PREV_EXPERIENCE",
+  {
+    p: [8, 1.5, 6],
+    l: [0, 0, 0],
+    title: "REMI LABS",
+    subtitle: "Founding Software Engineer · YC W22 · Lehi, UT · Aug 2023 – Jul 2025. Built the web platform managing 57,000+ roofing projects amounting to $10M ARR.",
+    price: "2023.00",
+    code: "02-REMI",
     align: "right",
     color: "#00C853", // Deep neon green (higher contrast)
     details: [
-      "Built a platform that manages 27K+ roofing projects",
-      "Reduced duplication by 93%",
+      "LED FASTPAY: PROJECTED $2–5M ARR",
+      "RESOLVED 500+ BUGS",
+      "REDUCED CODE DUPLICATION BY 93%",
+      "SELF-HEALING SALESFORCE SYNC ENGINE",
     ]
   },
-  { 
-    p: [-4, 1, 8], 
-    l: [0, 0, 0], 
-    title: "STARTUP", 
-    translation: "شركة ناشئة",
-    translationKorean: "스타트업",
-    subtitle: "Co-founded a startup that provides real-time transcription services to businesses. Integrated with 30+ local businesses and transcribed dozens of hours of audio.",
-    price: "0001.00",
-    code: "03-WORK",
+  {
+    p: [-4, 1, 8],
+    l: [0, 0, 0],
+    title: "BRIDGE",
+    subtitle: "Technical Co-founder · Provo, UT · Aug 2022 – Jul 2023. Co-founded a virtual interpreter for deaf communities, converting conversations into real-time group chat.",
+    price: "2022.00",
+    code: "03-BRIDGE",
     align: "left",
     color: "#2962FF", // Electric blue (slightly deeper)
     details: [
-      "REAL-TIME TRANSCRIPTION",
-      "73% ACCURACY MVP",
-      "WON 1ST PLACE IN SANDBOX HACKATHON"
+      "73% TRANSCRIPTION ACCURACY MVP",
+      "1ST PLACE AT HACKATHON",
+      "8 BUSINESS PARTNERS, 1000+ DAILY CONVERSATIONS",
     ]
   },
-  { 
-    p: [-7, 4, -7], 
-    l: [0, 0, 0], 
-    title: "INTERNSHIPS", 
-    translation: "دراسة",
-    translationKorean: "졸업",
-    price: "3000.00",
-    code: "04-INTERNSHIPS",
+  {
+    p: [-7, 4, -7],
+    l: [0, 0, 0],
+    title: "DRAGN LABS",
+    price: "2022.00",
+    code: "04-RESEARCH",
     align: "right",
     color: "#D500F9", // Deep magenta/violet
-    subtitle: "I did 3 internships during college. First one was at Udemy where I migrated their busiest frontend entrypoints to NextJs, leveraging NextJs's server-side rendering to improve performance and SEO. The other internships were in Crypto and Marketplace startups based in Lehi, UT and NYC respectively.",
-  },
-  { 
-    p: [0, 10, 0], 
-    l: [0, 0, 0], 
-    title: "RESEARCH", 
-    translation: "أبحاث",
-    translationKorean: "연구",
-    price: "0000.00",
-    code: "05-RSRCH",
-    align: "left",
-    color: "#00B8D4", // Cyan/teal (more readable on light bg)
-    subtitle: "Co-authored a paper on traffic prediction using LSTM. Processed 2TB+ of traffic light data accross every intersection in the state of Utah in 15 minute increments.",
+    subtitle: "Student Researcher & Co-author · BYU · Jan 2022 – Jun 2022. Built an LSTM model predicting traffic flow on 2K+ Utah roads from 2TB+ of intersection data. Published in Transportation Research Record, Oct 2023.",
     details: [
-      "LSTM TRAFFIC PREDICTION",
-      "2TB+ DATA PROCESSING",
+      "97% FASTER TRAINING VIA MODEL PARALLELISM",
+      "K-FOLD CROSS-VALIDATION",
     ]
   },
-  { 
-    p: [5, 2, 8], 
-    l: [0, 0, 0], 
-    title: "CONTACT", 
-    translation: "تواصل",
-    translationKorean: "연락",
+  {
+    p: [0, 10, 0],
+    l: [0, 0, 0],
+    title: "UDEMY",
+    price: "2021.00",
+    code: "05-UDEMY",
+    align: "left",
+    color: "#00B8D4", // Cyan/teal (more readable on light bg)
+    subtitle: "Software Engineering Intern · San Francisco, CA · Jun 2021 – Aug 2021. Migrated the front-end from React to Next.js with hybrid rendering.",
+    details: [
+      "40% FASTER PAGE LOADS FOR 1M+ USERS",
+      "UNIT, INTEGRATION & E2E TESTS IN CI/CD",
+    ]
+  },
+  {
+    p: [5, 2, 8],
+    l: [0, 0, 0],
+    title: "CONTACT",
     subtitle: "HIRE_IMMEDIATELY",
     price: "TOTAL",
     code: "06-END",
@@ -250,29 +256,16 @@ function Scene() {
   );
 }
 
-const GlitchText = ({ text, color, translation, translationKorean }: { text: string, color: string, translation?: string, translationKorean?: string }) => {
+const GlitchText = ({ text, color }: { text: string, color: string }) => {
   const [displayText, setDisplayText] = useState(text);
   const elementRef = useRef<HTMLDivElement>(null);
-  
-  // Memoize the chars selection to avoid changing it on every render, 
-  // but we want it to potentially change on each "glitch" session or just be stable?
-  // The requirement is "use that randomly".
-  // If we want it to be random every time the glitch effect runs (on intersection),
-  // we should move the selection inside the effect or use a ref/state that updates on intersection.
-  
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Randomly select between translation (Arabic) and translationKorean
-            const options = [];
-            if (translation) options.push(translation);
-            if (translationKorean) options.push(translationKorean);
-            
-            const selectedChars = options.length > 0 
-              ? options[Math.floor(Math.random() * options.length)] 
-              : "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+            const selectedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
 
             let iterations = 0;
             const interval = setInterval(() => {
@@ -305,37 +298,39 @@ const GlitchText = ({ text, color, translation, translationKorean }: { text: str
     }
 
     return () => observer.disconnect();
-  }, [text, translation, translationKorean]);
+  }, [text]);
 
   return (
-    <div ref={elementRef} className="relative inline-block transition-colors duration-300" style={{ color }}>
+    <div
+      ref={elementRef}
+      className="relative inline-block"
+      style={{
+        // Liquid glass glyphs: tinted translucent gradient clipped to the
+        // letters, with a specular white streak, glass-edge stroke, and depth.
+        backgroundImage: `linear-gradient(135deg, ${color}E6 0%, ${color}59 38%, rgba(255,255,255,0.9) 50%, ${color}4D 58%, ${color}CC 100%)`,
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+        color: "transparent",
+        WebkitTextStroke: "1px rgba(255,255,255,0.55)",
+        filter:
+          "drop-shadow(0 4px 8px rgba(0,0,0,0.18)) drop-shadow(0 1px 0 rgba(255,255,255,0.65))",
+      }}
+    >
       {displayText}
     </div>
   );
 };
 
 export default function Portfolio3DMVP() {
-  const isBlogPage =
-    typeof window !== "undefined" && window.location.pathname === "/blog";
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+  const isBlogPage = pathname === "/blog";
+  const isBlogTempPage = pathname === "/blog-temp";
 
-  const [loadingStage, setLoadingStage] = useState<"visible" | "fading" | "hidden">(
-    "visible"
-  );
-
-  useEffect(() => {
-    if (isBlogPage) return;
-    const FADE_MS = 500;
-    const t1 = window.setTimeout(() => setLoadingStage("fading"), 5000);
-    const t2 = window.setTimeout(() => setLoadingStage("hidden"), 5000 + FADE_MS);
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-    };
-  }, [isBlogPage]);
+  const [introDone, setIntroDone] = useState(false);
 
   useEffect(() => {
-    if (isBlogPage) return;
-    if (loadingStage === "hidden") return;
+    if (isBlogPage || isBlogTempPage) return;
+    if (introDone) return;
 
     const prevHtmlOverflow = document.documentElement.style.overflow;
     const prevBodyOverflow = document.body.style.overflow;
@@ -356,34 +351,33 @@ export default function Portfolio3DMVP() {
       document.documentElement.style.overflow = prevHtmlOverflow;
       document.body.style.overflow = prevBodyOverflow;
     };
-  }, [isBlogPage, loadingStage]);
+  }, [isBlogPage, introDone]);
 
   if (isBlogPage) return <Blog />;
+
+  if (isBlogTempPage)
+    return (
+      <div className="w-full h-screen flex flex-col items-center justify-center bg-white text-black font-mono">
+        <div className="text-xs mb-4 border border-current inline-block px-2 py-1 rounded-full">
+          07-BLOG
+        </div>
+        <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase mb-6">
+          Coming Soon
+        </h1>
+        <a
+          href="/"
+          className="text-sm font-bold underline decoration-2 underline-offset-4 hover:opacity-50"
+        >
+          ← BACK HOME
+        </a>
+      </div>
+    );
 
   return (
     <div className="w-full h-screen overflow-hidden bg-transparent text-black font-mono transition-colors duration-500">
       <Header />
 
-      {loadingStage !== "hidden" && (
-        <div
-          className={[
-            "fixed inset-0 z-[9999] flex items-center justify-center bg-black text-white",
-            "transition-opacity duration-500 ease-out",
-            loadingStage === "fading" ? "opacity-0" : "opacity-100",
-          ].join(" ")}
-          style={{ overscrollBehavior: "none" }}
-          onWheel={(e) => e.preventDefault()}
-          onTouchMove={(e) => e.preventDefault()}
-          aria-live="polite"
-          aria-busy="true"
-        >
-          <div className="text-center px-6">
-            <div className="text-[10px] tracking-[0.4em] uppercase opacity-70">
-              Loading
-            </div>
-          </div>
-        </div>
-      )}
+      {!introDone && <SlopIntro onDone={() => setIntroDone(true)} />}
       
       <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.04] mix-blend-multiply"
            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
@@ -419,7 +413,7 @@ export default function Portfolio3DMVP() {
                         <div>
                           <div className="text-xs mb-2 border border-current inline-block px-2 py-1 rounded-full">{view.code}</div>
                           <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-[0.8] mb-4 uppercase whitespace-nowrap">
-                            <GlitchText text={view.title} color={view.color} translation={view.translation} translationKorean={view.translationKorean} />
+                            <GlitchText text={view.title} color={view.color} />
                           </h2>
                           <p
                             className="text-left text-base md:text-lg font-bold tracking-widest uppercase"
@@ -446,7 +440,7 @@ export default function Portfolio3DMVP() {
                           <div className="border-t-2 border-current pt-4 w-12 mb-8"></div>
                           <div className="text-xs mb-2 border border-current inline-block px-2 py-1 rounded-full">{view.code}</div>
                           <h2 className="text-5xl md:text-8xl font-black tracking-tighter leading-[0.8] mb-4 uppercase whitespace-nowrap">
-                            <GlitchText text={view.title} color={view.color} translation={view.translation} translationKorean={view.translationKorean} />
+                            <GlitchText text={view.title} color={view.color} />
                           </h2>
                           <p
                             className="text-left text-base md:text-lg font-bold tracking-widest uppercase"
@@ -470,7 +464,7 @@ export default function Portfolio3DMVP() {
                        <div className="md:col-span-12 flex flex-col justify-center items-center text-center h-full py-12">
                          <div className="border-t-2 border-current pt-4 w-12 mb-8"></div>
                          <h2 className="text-5xl md:text-9xl font-black tracking-tighter leading-[0.8] mb-4 uppercase whitespace-nowrap">
-                           <GlitchText text={view.title} color={view.color} translation={view.translation} translationKorean={view.translationKorean} />
+                           <GlitchText text={view.title} color={view.color} />
                          </h2>
                           <a href="https://www.linkedin.com/in/adnankhayyat/" className="text-2xl md:text-4xl underline decoration-4 underline-offset-8 hover:opacity-50 transition-opacity px-4 py-2 pointer-events-auto text-current">
                             LINKEDIN
