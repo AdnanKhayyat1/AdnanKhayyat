@@ -62,11 +62,11 @@ export function ExpandedHeader({
               type="button"
               onClick={() => {
                 onClose();
-                window.location.assign("/blog-temp");
+                window.location.assign("/blog");
               }}
               className="group flex items-center gap-2 text-sm md:text-base font-bold hover:underline decoration-2 underline-offset-4 hover:cursor-pointer"
             >
-              BLOG
+              THOUGHTS
             </button>
           </div>
         </div>

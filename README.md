@@ -1,3 +1,9 @@
+# Thoughts blog
+
+Visit `/blog` for the dated thoughts feed. Edit `content/thoughts.md` to publish entries; there is no in-page editor. Start each entry with `## YYYY-MM-DD`, followed by plain text, and separate paragraphs with blank lines. Newer dates appear first; entries with the same date retain their file order. Saving updates the development server; rebuild and deploy to update production.
+
+The blog uses scoped styles in `src/thoughts.css`: small, lightweight Inter type, generous whitespace, and warm paper (`#faf9f6`). Only the blog bypasses the global grayscale filter. The portfolio loads lazily, so `/blog` does not load its 3D bundle.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

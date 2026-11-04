@@ -39,23 +39,14 @@ export const Header = () => {
       {/* Foreground header content */}
       <header
         className={[
-          "relative p-4 md:p-6 flex justify-between items-start pointer-events-auto",
-          // When the menu is open, hide the normal header so the expanded panel
-          // reads as a clean black box (no overlay).
-          open ? "opacity-0 pointer-events-none" : "opacity-100",
-          // Closed: original color (black) and normal blending.
-          // Open: white text with mix-blend-difference for strong contrast.
-          open ? "mix-blend-difference text-white" : "mix-blend-normal text-black",
+          "glass-header relative flex justify-between items-center text-black",
+          open ? "opacity-0 pointer-events-none" : "opacity-100 pointer-events-auto",
         ].join(" ")}
       >
         <div className="flex flex-col items-start">
           <h1 className="text-xl md:text-2xl font-black tracking-tighter leading-none">
             ADNAN<br />KHAYYAT
           </h1>
-          <div className="mt-2 text-xs md:text-sm font-mono opacity-80">
-            EST. 2025<br />
-            NO. 74-211
-          </div>
         </div>
 
         <div className="flex flex-col items-end">
@@ -71,7 +62,6 @@ export const Header = () => {
               ↗
             </span>
           </button>
-          <div className="mt-2 text-right text-xs md:text-sm font-mono opacity-80 hidden md:block"></div>
         </div>
       </header>
     </div>

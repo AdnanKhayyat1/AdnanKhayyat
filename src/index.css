@@ -1,10 +1,142 @@
 @import "tailwindcss";
-html, body, #root { height: 100%; font-family: 'Helvetica Neue', sans-serif;}
+@theme {
+  --font-sans: "Inter Variable", "Inter", sans-serif;
+}
+html, body, #root { height: 100%; font-family: var(--font-sans); }
+/* Keep the entire site monochrome, including WebGL, images, and hover effects. */
 body { margin: 0; }
 
+.glass-header {
+  margin: 0;
+  width: 100%;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(125deg, rgb(255 255 255 / 70%), rgb(255 255 255 / 24%) 48%, rgb(245 245 245 / 48%));
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  box-shadow: none;
+}
+
+.glass-header button {
+  min-height: 44px;
+  border-radius: 8px;
+}
+
+.glass-header button:focus-visible {
+  outline: 2px solid #202020;
+  outline-offset: 6px;
+}
+
+@supports not ((backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))) {
+  .glass-header { background: rgb(255 255 255 / 94%); }
+}
+
+.experience-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  color: #202020;
+  pointer-events: none;
+  --scene-inset: clamp(24px, 4vw, 64px);
+}
+
+.scene-heading {
+  position: absolute;
+  top: max(112px, 13vh);
+  left: var(--scene-inset);
+  width: 40%;
+  max-width: 480px;
+}
+
+.experience-section--detail .scene-details {
+  color: #fff;
+  text-shadow: 0 1px 4px rgb(0 0 0 / 60%);
+  border-color: currentColor;
+}
+
+.scene-rule {
+  width: 48px;
+  border-top: 2px solid currentColor;
+  margin-bottom: 24px;
+}
+
+.scene-title {
+  margin: 0 0 16px;
+  font-size: clamp(36px, 4.5vw, 64px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.scene-summary {
+  margin: 0;
+  font-size: clamp(11px, 1.05vw, 14px);
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.scene-details,
+.scene-contact {
+  position: absolute;
+  right: var(--scene-inset);
+  bottom: max(40px, 7vh);
+  width: 46%;
+  max-width: 640px;
+  margin: 0;
+}
+
+.scene-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  list-style: none;
+  padding: 0 0 0 20px;
+  border-left: 1px solid #555;
+  font-size: clamp(11px, 1.05vw, 14px);
+  line-height: 0.9;
+}
+
+.scene-contact a {
+  font-size: clamp(24px, 3vw, 40px);
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  pointer-events: auto;
+}
+
+.scene-number {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  font-size: 20vw;
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.03;
+}
+
+@media (max-width: 600px) {
+  .experience-section { --scene-inset: 20px; }
+  .scene-heading {
+    top: 112px;
+    width: calc(100% - 2 * var(--scene-inset));
+    max-width: 360px;
+  }
+  .scene-rule { margin-bottom: 16px; }
+  .scene-title { font-size: 36px; margin-bottom: 12px; }
+  .scene-details,
+  .scene-contact {
+    width: calc(100% - 2 * var(--scene-inset));
+    bottom: 32px;
+  }
+  .scene-details { padding-left: 16px; }
+}
+
 .font-inter {
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
-    Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: var(--font-sans);
 }
 
 /* Lens effects for ultra-realistic car showroom */
