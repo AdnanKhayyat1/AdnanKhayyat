@@ -1,3 +1,5 @@
+import signatureUrl from "./assets/signature.png";
+
 type ExpandedHeaderProps = {
   open: boolean;
   onClose: () => void;
@@ -72,6 +74,13 @@ export function ExpandedHeader({
         </div>
 
         <div className="flex-1 min-h-0 flex flex-col items-center justify-center px-4 pb-4">
+          <img
+            src={signatureUrl}
+            alt="Adnan Khayyat signature"
+            width={1316}
+            height={522}
+            className="w-64 max-w-[65vw] max-h-[14vh] object-contain shrink-0"
+          />
           <div className="mt-4 text-xs md:text-sm text-white font-bold flex flex-col items-center justify-center uppercase text-center leading-tight">
             <div>3D Model by Lionsharp Studios</div>
             <div>Vehicle Design by Porsche AG</div>
